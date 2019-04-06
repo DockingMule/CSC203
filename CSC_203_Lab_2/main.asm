@@ -1,3 +1,7 @@
+;Lab2
+;Austin Alloway
+;Brody Carney
+
 TITLE MASM Template						(main.asm)
 
 ; Import the Irvine library functions
