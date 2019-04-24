@@ -31,6 +31,9 @@ main PROC
 	; Gathering starting, ending, and generation numbers
 	; ---------------------------------------------------
 
+	mov  eax,lightCyan+ (gray*16)
+      call SetTextColor
+
 	MOV edx, OFFSET fancyLines	
 	CALL writeString
 
