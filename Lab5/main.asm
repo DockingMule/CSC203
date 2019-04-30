@@ -77,12 +77,12 @@ key PROC
 ; Returns:
 ;----------------------------------------------------
 mov edx, 0
-mov ebx, 0
+mov esi, 0
 decoderLoop:
-	mov esi, [eax + ebx * 4]
-	mov dl, [edi + esi]
-	mov [eax + ebx], dl
-	INC ebx
+	mov ebx, [eax + esi * 4]
+	mov dl, [edi + ebx]
+	mov [eax + esi], dl
+	INC esi
 	LOOP decoderLoop
 
 
