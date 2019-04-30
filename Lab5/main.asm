@@ -1,3 +1,4 @@
+  
 TITLE MASM Template						(main.asm)
 
 ; Import the Irvine library functions
@@ -48,6 +49,9 @@ main PROC
 ;------------------------------------------------------------------------------
 ; User Proceduer call
 ;------------------------------------------------------------------------------
+	mov eax, OFFSET codedMessage
+	mov edi, OFFSET keypass
+	mov ecx, valueCount
 	CALL key
 
 ;------------------------------------------------------------------------------
@@ -56,7 +60,7 @@ main PROC
 	mov edx, OFFSET decodedMessagePrompt
 	CALL WriteString
 
-	mov edx, OFFSET decodedMessage
+	mov edx, OFFSET codedMessage
 	CALL WriteString
 
 	exit
@@ -64,21 +68,23 @@ main ENDP
 
 ;----------------------------------------------------
 key PROC
-; purpose: 
+; purpose: Takes in coded string and decodes using passcode string
+;		!!!INITIAL CODED STRING BECOMES OVERWRITTEN!!!
 ; Recieves:
+;	EAX: string to decode/coded
+;	edi: String passcode
+;	ECX: amount of values
 ; Returns:
 ;----------------------------------------------------
-mov eax, 0
 mov edx, 0
 mov ebx, 0
-mov ecx, valueCount
-
 decoderLoop:
-	mov eax, [codedMessage + ebx * 4]
-	mov dl, [keypass + eax]
-	mov [decodedMessage + ebx], dl
+	mov esi, [eax + ebx * 4]
+	mov dl, [edi + esi]
+	mov [eax + ebx], dl
 	INC ebx
 	LOOP decoderLoop
+
 
 	ret
 key ENDP		;end of user defined procedure
