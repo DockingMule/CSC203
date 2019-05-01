@@ -1,11 +1,11 @@
 ; Austin Alloway
-; Alishba Younas
-; 4/17/2019
-; Lab 4
+; Brody Carney
+; 4/30/19
+; Lab 5
 ; Purpose:
-;		user input starting and ending number
-;		and program generates random numbers as many
-;		times as user chooses.
+;		Input number of characters and string of coded characters
+;		decodes characters using key string
+;		output decoded message
 TITLE MASM Template						(main.asm)
 
 ; Import the Irvine library functions
@@ -13,110 +13,85 @@ INCLUDE Irvine32.inc
 
 ; Data declarations section used to declare variables for the program
 .data
-	startingNumberPrompt BYTE "What is the starting number? ",0
-	endingNumberPrompt BYTE "What is the ending number? ",0
-	numberOfGenerationsPrompt BYTE "How many times do you want to randomly generate a number? ",0
-	endingPrompt BYTE "Thanks for running the lottery simulator...",0
-	fancyLines BYTE 30 DUP ('~-'),0
-	numberOfGenerations DWORD 0
-	startingNumber DWORD 0
-	endingNumber DWORD 0
 
+;------------------------------------------------------------------------------
+; data variables
+;------------------------------------------------------------------------------
+	valueNumberPrompt BYTE "How many values are in the message? ", 0
+	codedMessagePrompt BYTE "Enter the values of the coded message: ", 0
+	decodedMessagePrompt BYTE "The decoded message: ", 0
+
+	codedMessage DWORD 25 DUP (0)
+	keypass BYTE ' ','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z', 0
+	valueCount DWORD 0
 
 ; Code section used to write the code for the program.
 .code
 main PROC
+	call Clrscr
+;------------------------------------------------------------------------------
+; initial Prompts
+;------------------------------------------------------------------------------
+	mov	 edx,OFFSET valueNumberPrompt
+	call WriteString
+	call ReadDec
+	mov valueCount, eax
 
-	; ---------------------------------------------------
-	; Gathering starting, ending, and generation numbers
-	; ---------------------------------------------------
-
-	mov  eax,lightCyan+ (gray*16)
-      call SetTextColor
-
-	MOV edx, OFFSET fancyLines	
-	CALL writeString
-
-	CALL crlf
-
-	MOV edx, OFFSET startingNumberPrompt		; Getting starting number
-	CALL writeString
-	CALL readDec
-	MOV startingNumber, eax
-
-	MOV edx, OFFSET endingNumberPrompt			; Getting ending number
-	CALL writeString
-	CALL readDec
-	MOV endingNumber, eax
-
-	MOV edx, OFFSET numberOfGenerationsPrompt	; Getting number of generations	
-	CALL writeString
-	CALL readDec
-	MOV numberofGenerations, eax
-
-	MOV edx, OFFSET fancyLines	
-	CALL writeString
+	MOV edx, OFFSET codedMessagePrompt
+	CALL WriteString
 
 	CALL crlf
 
-	
-	; ---------------------------------------------------
-	; Looping each generation and printing random number
-	; ---------------------------------------------------
+;------------------------------------------------------------------------------
+; loop for codedmessage string
+;------------------------------------------------------------------------------
+	mov ecx, valueCount
+	mov ebx, 0
+	codedMessageLoop:
+		CALL ReadDec
+		mov [codedmessage + ebx * 4], eax
+		INC ebx
+		Loop codedMessageLoop
+;------------------------------------------------------------------------------
+; User Proceduer call
+;------------------------------------------------------------------------------
+	mov eax, OFFSET codedMessage
+	mov edi, OFFSET keypass
+	mov ecx, valueCount
+	CALL key
 
-	MOV edx, startingNumber			; for myRandom starting number
-	MOV ebx, endingNumber			; for myRandom ending number
-	MOV ecx, numberOfGenerations	; for loop iterations
-	CALL Randomize
+;------------------------------------------------------------------------------
+; Final outputs
+;------------------------------------------------------------------------------
+	mov edx, OFFSET decodedMessagePrompt
+	CALL WriteString
 
-	L1:
-		CALL myRandom			; user defined procedure
-		CALL writeDec
-		CALL crlf
-		LOOP L1
-
-	; ---------------------------------------------------
-	; final prompt
-	; ---------------------------------------------------
-
-
-	MOV edx, OFFSET fancyLines		
-	CALL writeString
-
-	CALL crlf
-
-	MOV edx, OFFSET endingPrompt
-	CALL writeString
-
-	CALL crlf
-
-	MOV edx, OFFSET fancyLines	
-	CALL writeString
-
-	CALL crlf
+	mov edx, OFFSET codedMessage
+	CALL WriteString
 
 	exit
 main ENDP
 
-
 ;----------------------------------------------------
-myRandom PROC
-; purpose: random number within staring and ending number
+key PROC
+; purpose: Takes in coded string and decodes using passcode string
+;		!!!INITIAL CODED STRING BECOMES OVERWRITTEN!!!
 ; Recieves:
-;	edx - starting number
-;	ebx - ending number
-;
+;	EAX: string to decode/coded
+;	EDI: String passcode
+;	ECX: amount of values
 ; Returns:
-;	eax - contains random number
+;	EAX: decoded string
 ;----------------------------------------------------
-
-	MOV eax, ebx
-	SUB eax, edx
-	INC eax
-	CALL RandomRange
-	ADD eax, edx
+mov edx, 0
+mov esi, 0
+decoderLoop:
+	mov ebx, [eax + esi * 4]
+	mov dl, [edi + ebx]
+	mov [eax + esi], dl
+	INC esi
+	LOOP decoderLoop
 	ret
-
-myRandom ENDP		;end of user defined procedure
+key ENDP		;end of user defined procedure
 
 END main
