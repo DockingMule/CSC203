@@ -1,4 +1,11 @@
-  
+; Austin Alloway
+; Brody Carney
+; 4/30/19
+; Lab 5
+; Purpose:
+;		Input number of characters and string of coded characters
+;		decodes characters using key string
+;		output decoded message
 TITLE MASM Template						(main.asm)
 
 ; Import the Irvine library functions
@@ -15,7 +22,6 @@ INCLUDE Irvine32.inc
 	decodedMessagePrompt BYTE "The decoded message: ", 0
 
 	codedMessage DWORD 25 DUP (0)
-	decodedMessage BYTE 25 DUP (0)
 	keypass BYTE ' ','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z', 0
 	valueCount DWORD 0
 
@@ -72,9 +78,10 @@ key PROC
 ;		!!!INITIAL CODED STRING BECOMES OVERWRITTEN!!!
 ; Recieves:
 ;	EAX: string to decode/coded
-;	edi: String passcode
+;	EDI: String passcode
 ;	ECX: amount of values
 ; Returns:
+;	EAX: decoded string
 ;----------------------------------------------------
 mov edx, 0
 mov esi, 0
@@ -84,9 +91,8 @@ decoderLoop:
 	mov [eax + esi], dl
 	INC esi
 	LOOP decoderLoop
-
-
 	ret
+
 key ENDP		;end of user defined procedure
 
 END main
