@@ -1,6 +1,6 @@
 ; Austin Alloway
-; 5/1//2019
-; Lab 4
+; 5/1/2019
+; Lab 6
 ; Purpose:
 ;		user input starting and ending number
 ;		and program generates random numbers as many
@@ -12,20 +12,23 @@ INCLUDE Irvine32.inc
 
 ; Data declarations section used to declare variables for the program
 .data
+
 	startingNumberPrompt BYTE "What is the starting number? ",0
 	endingNumberPrompt BYTE "What is the ending number? ",0
 	numberOfGenerationsPrompt BYTE "How many times do you want to randomly generate a number? ",0
+	luckyNumberPrompt BYTE "What is your lucky number? ", 0
+
 	winPrompt BYTE "Congratulations! Your lucky number was a winner! It came out ",0
 	losePrompt BYTE "Sorry your number did not come out. You lose.", 0
-	luckyNumberPrompt BYTE "What is your lucky number? ", 0
 	winPromptEnd BYTE " time(s).", 0
+
 	fancyLines BYTE 30 DUP ('~-'),0
+
 	numberOfGenerations DWORD 0
 	startingNumber DWORD 0
 	endingNumber DWORD 0
 	luckyNumber DWORD 0
 	winCount DWORD 0
-
 
 ; Code section used to write the code for the program.
 .code
@@ -37,12 +40,10 @@ main PROC
  
     MOV  eax, yellow + (gray * 16)	
     CALL   SetTextColor
-
 	call Clrscr
 
 	MOV edx, OFFSET fancyLines	
 	CALL writeString
-
 	CALL crlf
 
 	MOV edx, OFFSET startingNumberPrompt		; Getting starting number
@@ -67,7 +68,6 @@ main PROC
 
 	MOV edx, OFFSET fancyLines	
 	CALL writeString
-
 	CALL crlf
 
 	
@@ -119,7 +119,6 @@ main PROC
 	
 		exit
 main ENDP
-
 
 ;----------------------------------------------------
 myRandom PROC
